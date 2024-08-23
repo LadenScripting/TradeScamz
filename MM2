@@ -1,0 +1,123 @@
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MyScreenGui"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create a Frame
+local frame = Instance.new("Frame")
+frame.Name = "MyFrame"
+frame.Size = UDim2.new(0.5, 0, 0.5, 0)  -- Change the size as needed
+frame.Position = UDim2.new(0.25, 0, 0.25, 0)  -- Change the position as needed
+frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Change the color as needed
+frame.Parent = screenGui
+
+-- Create a UI corner for the Frame
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.1, 0)  -- Change the corner radius as needed
+uiCorner.Parent = frame
+
+-- Create a title label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, 0, 0, 30)  -- Width of frame, height of 30
+titleLabel.Position = UDim2.new(0, 0, 0, 0)  -- Top-left corner
+titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Black background for visibility
+titleLabel.BackgroundTransparency = 0.5  -- Semi-transparent background
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+titleLabel.TextStrokeTransparency = 0.5  -- Adds a stroke around the text
+titleLabel.TextSize = 16
+titleLabel.Text = "Trade Scam GUI | by Laden"
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = frame
+
+-- Create a subtitle label
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Name = "SubtitleLabel"
+subtitleLabel.Size = UDim2.new(0.7, 0, 0, 20)  -- Adjusted width to fit "Off" button
+subtitleLabel.Position = UDim2.new(0, 10, 0, 50)  -- Lower and left-aligned
+subtitleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- White background
+subtitleLabel.BackgroundTransparency = 1  -- Transparent background
+subtitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Black text
+subtitleLabel.TextSize = 16
+subtitleLabel.Text = "Trade Scam"
+subtitleLabel.TextXAlignment = Enum.TextXAlignment.Left  -- Align text to the left
+subtitleLabel.Parent = frame
+
+-- Create an "Off" button
+local offButton = Instance.new("TextButton")
+offButton.Name = "OffButton"
+offButton.Size = UDim2.new(0, 50, 0, 20)
+offButton.Position = UDim2.new(0.7, 10, 0, 50)  -- Positioned to the right of the subtitle label
+offButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red background
+offButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+offButton.Text = "Off"
+offButton.TextSize = 16
+offButton.Parent = frame
+
+-- Create a UI corner for the Off button
+local offButtonUICorner = Instance.new("UICorner")
+offButtonUICorner.CornerRadius = UDim.new(0.2, 0)  -- Slightly rounded corners
+offButtonUICorner.Parent = offButton
+
+-- Create a close button
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -40, 0, 10)  -- Top-right corner
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red background for visibility
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+closeButton.Text = "X"
+closeButton.Parent = frame
+
+-- Create a UI corner for the close button
+local closeButtonUICorner = Instance.new("UICorner")
+closeButtonUICorner.CornerRadius = UDim.new(0.5, 0)  -- Makes the button circular
+closeButtonUICorner.Parent = closeButton
+
+-- Variables for dragging
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+-- Function to begin dragging
+local function onDragBegin(input)
+	dragging = true
+	dragStart = input.Position
+	startPos = frame.Position
+	input.Changed:Connect(function()
+		if input.UserInputState == Enum.UserInputState.End then
+			dragging = false
+		end
+	end)
+end
+
+-- Function to update dragging
+local function onDragUpdate(input)
+	if dragging then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end
+
+-- Function to toggle the button state
+local function onOffButtonClick()
+	if offButton.Text == "Off" then
+		offButton.Text = "On"
+		offButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green background
+	else
+		offButton.Text = "Off"
+		offButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red background
+	end
+end
+
+-- Function to close the GUI
+local function onCloseButtonClick()
+	screenGui:Destroy()  -- Removes the entire ScreenGui
+end
+
+-- Connect input events
+frame.InputBegan:Connect(onDragBegin)
+frame.InputChanged:Connect(onDragUpdate)
+closeButton.MouseButton1Click:Connect(onCloseButtonClick)
+offButton.MouseButton1Click:Connect(onOffButtonClick)
